@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react';
+import { Form } from './components/Form';
+import { PersonList } from './components/PersonList';
+import { create, getAll, remove } from './service/person';
 
 function App() {
+  const [personList, setPersonList] = useState([]);
+
+  const loadPersonList = () => {
+    const data = getAll();
+    setPersonList(data);
+  };
+
+  const handleCreate = (person) => {
+    create(person);
+    loadPersonList();
+  };
+
+  const handleRemove = (index) => {
+    remove(index);
+    loadPersonList();
+  };
+
+  useEffect(() => {
+    loadPersonList();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Form onCreate={handleCreate} />
+      <PersonList personList={personList} onRemove={handleRemove} />
     </div>
   );
 }
